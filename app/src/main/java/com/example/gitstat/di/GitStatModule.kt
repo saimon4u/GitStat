@@ -1,12 +1,18 @@
 package com.example.gitstat.di
 
 import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresExtension
 import androidx.room.Room
 import com.example.gitstat.data.local.Database
 import com.example.gitstat.data.remote.Api
 import com.example.gitstat.data.repository.RepositoryImpl
 import com.example.gitstat.domain.repository.Repository
 import com.example.gitstat.domain.useCases.AddUser
+import com.example.gitstat.domain.useCases.GetCommits
+import com.example.gitstat.domain.useCases.GetDeployments
+import com.example.gitstat.domain.useCases.GetLanguages
+import com.example.gitstat.domain.useCases.GetRepos
 import com.example.gitstat.domain.useCases.GetUser
 import com.example.gitstat.domain.useCases.UseCases
 import dagger.Module
@@ -53,6 +59,7 @@ object GitStatModule{
         ).build()
     }
 
+    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     @Provides
     @Singleton
     fun providesRepository(database: Database, api: Api): Repository{
@@ -69,7 +76,11 @@ object GitStatModule{
     ): UseCases{
         return UseCases(
             addUser = AddUser(repository),
-            getUser = GetUser(repository)
+            getUser = GetUser(repository),
+            getRepos = GetRepos(repository),
+            getLanguages = GetLanguages(repository),
+            getDeployments = GetDeployments(repository),
+            getCommits = GetCommits(repository)
         )
     }
 }

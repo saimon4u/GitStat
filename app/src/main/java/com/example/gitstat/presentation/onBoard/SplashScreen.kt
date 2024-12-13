@@ -1,6 +1,7 @@
 package com.example.gitstat.presentation.onBoard
 
 import android.content.SharedPreferences
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -36,21 +37,22 @@ fun SplashScreen(
     pref: SharedPreferences
 ) {
     val context = LocalContext.current
-    val isAuthenticated = pref.getBoolean("authenticated", false)
+    val userName = pref.getString("userName", "")
     val connectivityObserver = NetworkConnectivityObserver(context)
     val status by connectivityObserver.observe().collectAsState(
         initial = ConnectivityObserver.Status.Unavailable
     )
     LaunchedEffect(status) {
         delay(2000)
-        if(isAuthenticated){
-            navController.navigate(Screen.HomeScreen)
-        }else{
-            if(status == ConnectivityObserver.Status.Available) {
+        if(status == ConnectivityObserver.Status.Available){
+            navController.popBackStack()
+            if(userName?.isNotBlank() == true){
+                navController.navigate(Screen.SearchScreen)
+            }else{
                 navController.navigate(Screen.OnBoardingScreen)
-            }else {
-                navController.navigate(Screen.HomeScreen)
             }
+        }else{
+            Toast.makeText(context, "Please check your internet connection...", Toast.LENGTH_SHORT).show()
         }
     }
 

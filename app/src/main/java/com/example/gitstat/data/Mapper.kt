@@ -1,6 +1,8 @@
 package com.example.gitstat.data
 
+import com.example.gitstat.data.remote.response.RepoDto
 import com.example.gitstat.data.remote.response.UserDto
+import com.example.gitstat.domain.model.Repo
 import com.example.gitstat.domain.model.User
 
 fun UserDto.toUser(): User{
@@ -18,5 +20,20 @@ fun UserDto.toUser(): User{
         eventsUrl = events_url ?: "",
         htmlUrl = html_url ?: "",
         type = type ?: ""
+    )
+}
+
+fun RepoDto.toRepo(): Repo{
+    return Repo(
+        name = name ?: "",
+        isPrivate = private ?: false,
+        repoLink = html_url ?: "",
+        forksCount = forks_count ?: 0,
+        eventsUrl = events_url ?: "",
+        languagesUrl = languages_url ?: "",
+        commitsUrl = commits_url ?: "",
+        deploymentsUrl = deployments_url ?: "",
+        size = size ?: 0,
+        watchersCount = watchers ?: 0
     )
 }

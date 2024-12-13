@@ -5,7 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.gitstat.presentation.details.HomeScreen
+import androidx.navigation.toRoute
+import com.example.gitstat.presentation.details.SearchScreen
 import com.example.gitstat.presentation.onBoard.OnBoardingScreen
 import com.example.gitstat.presentation.onBoard.SplashScreen
 
@@ -25,10 +26,12 @@ fun NavigationHelper(
             )
         }
         composable<Screen.OnBoardingScreen> {
-            OnBoardingScreen(navController = navController)
+            OnBoardingScreen(navController = navController, pref = pref)
         }
-        composable<Screen.HomeScreen> {
-            HomeScreen()
+        composable<Screen.SearchScreen> {
+            SearchScreen(
+                pref = pref
+            )
         }
     }
 }

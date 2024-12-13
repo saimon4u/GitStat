@@ -1,11 +1,13 @@
 package com.example.gitstat.presentation.utils
 
-@kotlinx.serialization.Serializable
-sealed class Screen{
-    @kotlinx.serialization.Serializable
-    data object OnBoardingScreen: Screen()
-    @kotlinx.serialization.Serializable
-    data object HomeScreen: Screen()
-    @kotlinx.serialization.Serializable
-    data object SplashScreen: Screen()
+import kotlinx.serialization.Serializable
+
+@Serializable
+sealed interface Screen{
+    @Serializable
+    data object OnBoardingScreen: Screen
+    @Serializable
+    data object SearchScreen: Screen
+    @Serializable
+    data object SplashScreen: Screen
 }
