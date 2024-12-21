@@ -3,7 +3,6 @@ package com.example.gitstat.presentation.details
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.gitstat.domain.model.InvalidUserException
-import com.example.gitstat.domain.model.Repo
 import com.example.gitstat.domain.useCases.UseCases
 import com.example.gitstat.presentation.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -76,6 +75,14 @@ class DetailsViewModel @Inject constructor(
         _detailsState.update {
             it.copy(
                 errorMessage = ""
+            )
+        }
+    }
+
+    private fun resetState(){
+        _detailsState.update {
+            DetailsState(
+                user = it.user
             )
         }
     }
@@ -217,8 +224,8 @@ class DetailsViewModel @Inject constructor(
         }
     }
 
-    fun onEvent(event: DetailsEvent){
-        when(event){
+    fun onEvent(event: DetailsEvent) {
+        when (event) {
             is DetailsEvent.EnteredUserName -> {
                 _detailsState.update {
                     it.copy(
@@ -226,41 +233,37 @@ class DetailsViewModel @Inject constructor(
                     )
                 }
             }
-
-            is DetailsEvent.ResetErrorMessage -> {
-                resetErrorMessage()
-            }
-
-            is DetailsEvent.GetUser -> {
-                getUser(event.userName)
-            }
-
+            is DetailsEvent.ResetErrorMessage -> resetErrorMessage()
+            is DetailsEvent.GetUser -> getUser(event.userName)
+            is DetailsEvent.ResetState -> resetState()
             is DetailsEvent.Search -> {
-
                 viewModelScope.launch {
-                    async {
-                        getUser(_detailsState.value.searchedUserName, true)
-                    }.await()
-                    async {
-                        getRepos()
-                    }.await()
-                    async {
-                        detailsState.value.repos?.forEach{repo->
-                            async {
-                                getLanguages(repo.name)
-                            }.await()
-                            async {
-                                getDeployments(repo.name)
-                            }.await()
-                            async {
-                                getCommits(repo.name)
-                            }.await()
-                        }
-                    }.await()
-                    _detailsState.update {
-                        it.copy(
-                            isFetchingComplete = true
-                        )
+                    val userDeferred = async { getUser(_detailsState.value.searchedUserName, true) }
+                    userDeferred.await()
+
+                    val reposDeferred = async { getRepos() }
+                    reposDeferred.await()
+                }
+            }
+            is DetailsEvent.FetchComplete -> {
+                _detailsState.update {
+                    it.copy(
+                        isFetchingComplete = true
+                    )
+                }
+            }
+
+            is DetailsEvent.FetchStatistics -> {
+                viewModelScope.launch {
+                    detailsState.value.repos?.forEach { repo ->
+                        val languagesDeferred = async { getLanguages(repo.name) }
+                        languagesDeferred.await()
+
+                        val deploymentsDeferred = async { getDeployments(repo.name) }
+                        deploymentsDeferred.await()
+
+                        val commitsDeferred = async { getCommits(repo.name) }
+                        commitsDeferred.await()
                     }
                 }
             }

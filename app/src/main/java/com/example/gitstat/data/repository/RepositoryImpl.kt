@@ -78,21 +78,23 @@ class RepositoryImpl @Inject constructor(
                 api.getRepos(userName)
             }catch (e: IOException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching repos..."))
                 return@flow
             }catch (e: HttpException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching repos..."))
                 return@flow
             }catch (e: Exception){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching repos..."))
                 return@flow
             }
 
             val repos = reposFromApi.map {
                 it.toRepo()
             }
+
+            println(repos)
 
             emit(Resource.Success(repos))
 
@@ -107,23 +109,26 @@ class RepositoryImpl @Inject constructor(
         return flow {
             emit(Resource.Loading(true))
 
+            println("get language")
+
             val languagesFromApi = try{
                 api.getLanguages(userName, repoName)
             }catch (e: IOException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching languages..."))
                 return@flow
             }catch (e: HttpException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching languages..."))
                 return@flow
             }catch (e: Exception){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching languages..."))
                 return@flow
             }
 
             emit(Resource.Success(languagesFromApi))
+            println(languagesFromApi)
 
 
             emit(Resource.Loading(false))
@@ -138,19 +143,20 @@ class RepositoryImpl @Inject constructor(
                 api.getDeployments(userName, repoName)
             }catch (e: IOException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching deployments..."))
                 return@flow
             }catch (e: HttpException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching deployments..."))
                 return@flow
             }catch (e: Exception){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching deployments..."))
                 return@flow
             }
 
             emit(Resource.Success(deploymentsFromApi.size))
+            println(deploymentsFromApi)
 
             emit(Resource.Loading(false))
         }
@@ -164,19 +170,20 @@ class RepositoryImpl @Inject constructor(
                 api.getCommits(userName, repoName)
             }catch (e: IOException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching commits..."))
                 return@flow
             }catch (e: HttpException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching commits..."))
                 return@flow
             }catch (e: Exception){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching commits..."))
                 return@flow
             }
 
             emit(Resource.Success(commitsFromApi.size))
+            println(commitsFromApi)
 
             emit(Resource.Loading(false))
         }

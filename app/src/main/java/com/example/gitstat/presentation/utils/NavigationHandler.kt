@@ -30,7 +30,8 @@ fun NavigationHelper(
         }
         composable<Screen.SearchScreen> {
             SearchScreen(
-                pref = pref
+                pref = pref,
+                navController = navController
             )
         }
     }
