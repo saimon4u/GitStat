@@ -10,7 +10,8 @@ data class DetailsState(
     val searchedUserName: String = "",
     val searchedUser: User? = null,
     val repos: List<Repo>? = null,
-    val usedLanguages: MutableMap<String, Int> = mutableMapOf(),
+    val usedLanguages: Map<String, Int> = emptyMap(),
     val deploymentCount: Int = 0,
-    val commitCount: Int = 0
+    val commitCount: Int = 0,
+    val isFetchingComplete: Boolean = false
 )

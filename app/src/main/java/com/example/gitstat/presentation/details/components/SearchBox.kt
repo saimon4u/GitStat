@@ -1,7 +1,5 @@
-package com.example.gitstat.presentation.onBoard
+package com.example.gitstat.presentation.details.components
 
-import android.content.SharedPreferences
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -18,54 +16,27 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import com.example.gitstat.presentation.utils.Screen
 
 @Composable
-fun OnBoardingScreen(
+fun SearchBox(
     modifier: Modifier = Modifier,
-    navController: NavController,
-    pref: SharedPreferences
+    userName: String,
+    onValueChange: (String) -> Unit,
+    readOnly: Boolean,
+    onSearchClick: () -> Unit
 ) {
-    val context = LocalContext.current
-    val onBoardViewModel = hiltViewModel<OnBoardViewModel>()
-    val onBoardState = onBoardViewModel.onBoardState.collectAsState().value
-
-    LaunchedEffect(onBoardState.errorMessage) {
-        if(onBoardState.errorMessage.isNotBlank()){
-            Toast.makeText(context, onBoardState.errorMessage, Toast.LENGTH_SHORT).show()
-            onBoardViewModel.onEvent(OnBoardEvent.ResetErrorMessage)
-        }
-    }
-    LaunchedEffect(onBoardState.navigate) {
-        if(onBoardState.navigate){
-            pref.edit().putString("userName", onBoardState.userName).apply()
-            navController.navigate(Screen.SearchScreen){
-                popUpTo(Screen.OnBoardingScreen){
-                    inclusive = true
-                }
-            }
-        }
-    }
-
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .padding(16.dp),
+            .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
-    ){
+    ) {
         Text(
-            text = "Welcome to GitStat",
+            text = "Search GitHub Statistics",
             style = MaterialTheme.typography.headlineMedium,
             fontFamily = MaterialTheme.typography.headlineMedium.fontFamily,
             fontWeight = FontWeight.Bold,
@@ -73,14 +44,14 @@ fun OnBoardingScreen(
         )
         Spacer(Modifier.height(10.dp))
         Text(
-            text = "It seems like you are new here,",
+            text = "Enter a GitHub username to explore their repository",
             style = MaterialTheme.typography.bodySmall,
             fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
             fontWeight = FontWeight.Thin,
             color = MaterialTheme.colorScheme.onBackground.copy(.6f)
         )
         Text(
-            text = "please enter your username to get started",
+            text = "stats, contributions, and more!",
             style = MaterialTheme.typography.bodySmall,
             fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
             fontWeight = FontWeight.Thin,
@@ -88,34 +59,30 @@ fun OnBoardingScreen(
         )
         Spacer(Modifier.height(16.dp))
         OutlinedTextField(
-            value = onBoardState.userName,
-            onValueChange = {
-                onBoardViewModel.onEvent(OnBoardEvent.EnteredUserName(it))
-            },
+            value = userName,
+            onValueChange = onValueChange,
             label = { Text("Username") },
             singleLine = true,
             placeholder = { Text("Enter your username") },
-            modifier = modifier.fillMaxWidth(),
-            readOnly = onBoardState.isLoading,
+            modifier = Modifier.fillMaxWidth(),
+            readOnly = readOnly,
         )
         Spacer(Modifier.height(16.dp))
         Button(
-            onClick = {
-                onBoardViewModel.onEvent(OnBoardEvent.GetStarted)
-            },
+            onClick = onSearchClick,
             colors = ButtonDefaults.buttonColors(
                 MaterialTheme.colorScheme.primary
             ),
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(10.dp),
         ) {
-            if(onBoardState.isLoading){
+            if(readOnly){
                 CircularProgressIndicator(
                     color = MaterialTheme.colorScheme.onPrimary
                 )
             }else{
                 Text(
-                    text = "Get Started",
+                    text = "Search",
                     style = MaterialTheme.typography.bodyMedium,
                     fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
                     fontWeight = FontWeight.Bold,

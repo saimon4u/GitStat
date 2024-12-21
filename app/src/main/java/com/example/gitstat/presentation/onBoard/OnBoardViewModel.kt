@@ -77,14 +77,17 @@ class OnBoardViewModel @Inject constructor(
                 usesCases.addUser.invoke(user)
                 _onBoardState.update {
                     it.copy(
-                        navigate = true
+                        navigate = true,
+                        isLoading = false,
+                        errorMessage = ""
                     )
                 }
             }catch (e: InvalidUserException){
                 _onBoardState.update {
                     it.copy(
                         isLoading = false,
-                        errorMessage = e.message ?: "An unexpected error occurred"
+                        errorMessage = e.message ?: "An unexpected error occurred",
+                        navigate = false
                     )
                 }
             }

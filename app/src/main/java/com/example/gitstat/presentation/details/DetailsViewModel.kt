@@ -7,6 +7,7 @@ import com.example.gitstat.domain.model.Repo
 import com.example.gitstat.domain.useCases.UseCases
 import com.example.gitstat.presentation.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -26,7 +27,7 @@ class DetailsViewModel @Inject constructor(
                 usesCases.getUser.invoke(userName, forceFetchFromRemote).collect{response->
                     when(response){
                         is Resource.Success -> {
-                            if(forceFetchFromRemote){
+                            if(userName == detailsState.value.searchedUserName){
                                 _detailsState.update {
                                     it.copy(
                                         isLoading = false,
@@ -119,9 +120,12 @@ class DetailsViewModel @Inject constructor(
                 when(response){
                     is Resource.Success -> {
                         _detailsState.update {
-                            val updatedLanguages = it.usedLanguages.toMutableMap()
+                            val updatedLanguages: MutableMap<String, Int> = mutableMapOf()
+                            detailsState.value.usedLanguages.forEach{ (language, count) ->
+                                updatedLanguages[language] = count
+                            }
                             response.data?.forEach { (language, count) ->
-                                updatedLanguages[language] = updatedLanguages.getOrDefault(language, 0) + count
+                                updatedLanguages[language] = (updatedLanguages[language] ?: 0) + 1
                             }
                             it.copy(
                                 isLoading = false,
@@ -232,15 +236,31 @@ class DetailsViewModel @Inject constructor(
             }
 
             is DetailsEvent.Search -> {
-                getUser(_detailsState.value.searchedUserName, true)
-                if(detailsState.value.errorMessage.isEmpty()){
-                    getRepos()
-                }
-                if(detailsState.value.errorMessage.isEmpty()){
-                    detailsState.value.repos?.forEach{ repo->
-                        getLanguages(repo.name)
-                        getDeployments(repo.name)
-                        getCommits(repo.name)
+
+                viewModelScope.launch {
+                    async {
+                        getUser(_detailsState.value.searchedUserName, true)
+                    }.await()
+                    async {
+                        getRepos()
+                    }.await()
+                    async {
+                        detailsState.value.repos?.forEach{repo->
+                            async {
+                                getLanguages(repo.name)
+                            }.await()
+                            async {
+                                getDeployments(repo.name)
+                            }.await()
+                            async {
+                                getCommits(repo.name)
+                            }.await()
+                        }
+                    }.await()
+                    _detailsState.update {
+                        it.copy(
+                            isFetchingComplete = true
+                        )
                     }
                 }
             }

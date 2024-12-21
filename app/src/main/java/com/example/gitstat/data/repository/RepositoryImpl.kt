@@ -33,6 +33,7 @@ class RepositoryImpl @Inject constructor(
             emit(Resource.Loading(true))
 
             val localUser = database.dao.getUser(userName)
+            println("localUser: $localUser")
 
             if(!forceFetchFromRemote){
                 emit(Resource.Success(
@@ -41,26 +42,25 @@ class RepositoryImpl @Inject constructor(
                 emit(Resource.Loading(false))
                 return@flow
             }
-
             val userFromApi = try{
                 api.getUser(userName)
             }catch (e: IOException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching user..."))
                 return@flow
             }catch (e: HttpException){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching user..."))
                 return@flow
             }catch (e: Exception){
                 e.printStackTrace()
-                emit(Resource.Error("Something went wrong..."))
+                emit(Resource.Error("Error occurred while fetching user..."))
                 return@flow
             }
 
-            val userEntity = userFromApi.toUser()
+            println("remoteUser: $userFromApi")
 
-            database.dao.insertUser(userEntity)
+            val userEntity = userFromApi.toUser()
 
             emit(Resource.Success(
                 userEntity
@@ -125,7 +125,6 @@ class RepositoryImpl @Inject constructor(
 
             emit(Resource.Success(languagesFromApi))
 
-            println(languagesFromApi)
 
             emit(Resource.Loading(false))
         }

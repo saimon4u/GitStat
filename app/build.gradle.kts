@@ -11,6 +11,7 @@ android {
     namespace = "com.example.gitstat"
     compileSdk = 34
 
+
     defaultConfig {
         applicationId = "com.example.gitstat"
         minSdk = 26
