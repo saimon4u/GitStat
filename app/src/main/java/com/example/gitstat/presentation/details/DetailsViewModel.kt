@@ -198,9 +198,10 @@ class DetailsViewModel @Inject constructor(
                 when(response){
                     is Resource.Success -> {
                         _detailsState.update {
+                            val newList = it.commitList + (response.data ?: emptyList())
                             it.copy(
                                 isLoading = false,
-                                commitCount = it.commitCount + (response.data ?: 0)
+                                commitList = newList
                             )
                         }
                     }
@@ -229,7 +230,7 @@ class DetailsViewModel @Inject constructor(
             is DetailsEvent.EnteredUserName -> {
                 _detailsState.update {
                     it.copy(
-                        searchedUserName = event.userName
+                        searchedUserName = event.userName.trim()
                     )
                 }
             }

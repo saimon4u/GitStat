@@ -70,7 +70,7 @@ fun LanguagePieChart(
             .fillMaxWidth(),
     ) {
         Text(
-            text = "Language Used:",
+            text = "Language Used",
             style = MaterialTheme.typography.headlineLarge,
             fontFamily = MaterialTheme.typography.headlineLarge.fontFamily,
             fontWeight = FontWeight.Bold,

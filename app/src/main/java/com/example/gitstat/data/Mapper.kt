@@ -1,7 +1,9 @@
 package com.example.gitstat.data
 
+import com.example.gitstat.data.remote.response.CommitDto
 import com.example.gitstat.data.remote.response.RepoDto
 import com.example.gitstat.data.remote.response.UserDto
+import com.example.gitstat.domain.model.Commit
 import com.example.gitstat.domain.model.Repo
 import com.example.gitstat.domain.model.User
 
@@ -35,5 +37,13 @@ fun RepoDto.toRepo(): Repo{
         deploymentsUrl = deployments_url ?: "",
         size = size ?: 0,
         watchersCount = watchers ?: 0
+    )
+}
+
+fun CommitDto.toCommit(): Commit{
+    return Commit(
+        id = node_id ?: "",
+        date = commit?.author?.date ?: "",
+        message = commit?.message ?: ""
     )
 }

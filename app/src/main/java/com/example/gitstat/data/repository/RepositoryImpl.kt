@@ -5,8 +5,10 @@ import android.os.Build
 import androidx.annotation.RequiresExtension
 import com.example.gitstat.data.local.Database
 import com.example.gitstat.data.remote.Api
+import com.example.gitstat.data.toCommit
 import com.example.gitstat.data.toRepo
 import com.example.gitstat.data.toUser
+import com.example.gitstat.domain.model.Commit
 import com.example.gitstat.domain.model.Repo
 import com.example.gitstat.domain.model.User
 import com.example.gitstat.domain.repository.Repository
@@ -33,7 +35,6 @@ class RepositoryImpl @Inject constructor(
             emit(Resource.Loading(true))
 
             val localUser = database.dao.getUser(userName)
-            println("localUser: $localUser")
 
             if(!forceFetchFromRemote){
                 emit(Resource.Success(
@@ -58,13 +59,9 @@ class RepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            println("remoteUser: $userFromApi")
-
             val userEntity = userFromApi.toUser()
 
-            emit(Resource.Success(
-                userEntity
-            ))
+            emit(Resource.Success(userEntity))
 
             emit(Resource.Loading(false))
         }
@@ -94,7 +91,6 @@ class RepositoryImpl @Inject constructor(
                 it.toRepo()
             }
 
-            println(repos)
 
             emit(Resource.Success(repos))
 
@@ -108,8 +104,6 @@ class RepositoryImpl @Inject constructor(
     ): Flow<Resource<Map<String, Int>>> {
         return flow {
             emit(Resource.Loading(true))
-
-            println("get language")
 
             val languagesFromApi = try{
                 api.getLanguages(userName, repoName)
@@ -128,7 +122,6 @@ class RepositoryImpl @Inject constructor(
             }
 
             emit(Resource.Success(languagesFromApi))
-            println(languagesFromApi)
 
 
             emit(Resource.Loading(false))
@@ -156,13 +149,12 @@ class RepositoryImpl @Inject constructor(
             }
 
             emit(Resource.Success(deploymentsFromApi.size))
-            println(deploymentsFromApi)
 
             emit(Resource.Loading(false))
         }
     }
 
-    override suspend fun getCommits(userName: String, repoName: String): Flow<Resource<Int>> {
+    override suspend fun getCommits(userName: String, repoName: String): Flow<Resource<List<Commit>>> {
         return flow {
             emit(Resource.Loading(true))
 
@@ -182,8 +174,11 @@ class RepositoryImpl @Inject constructor(
                 return@flow
             }
 
-            emit(Resource.Success(commitsFromApi.size))
-            println(commitsFromApi)
+            val commitList = commitsFromApi.map {
+                it.toCommit()
+            }
+
+            emit(Resource.Success(commitList))
 
             emit(Resource.Loading(false))
         }

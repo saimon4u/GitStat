@@ -2,6 +2,7 @@ package com.example.gitstat.presentation.details.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,7 +34,8 @@ import com.example.gitstat.domain.model.User
 @Composable
 fun TopBar(
     modifier: Modifier = Modifier,
-    user: User?
+    user: User?,
+    onProfileClick: () -> Unit
 ) {
 
     val imgState = rememberAsyncImagePainter(
@@ -59,7 +61,10 @@ fun TopBar(
             Image(
                 modifier = Modifier
                     .size(30.dp)
-                    .clip(CircleShape),
+                    .clip(CircleShape)
+                    .clickable {
+                        onProfileClick()
+                    },
                 painter = painterResource(
                     id = R.drawable.logo
                 ),
@@ -76,7 +81,10 @@ fun TopBar(
                         width = 1.dp,
                         color = MaterialTheme.colorScheme.onBackground,
                         shape = CircleShape
-                    ),
+                    )
+                    .clickable {
+                        onProfileClick()
+                    },
                 painter = imgState.painter,
                 contentDescription = "Github avatar",
                 contentScale = ContentScale.Crop

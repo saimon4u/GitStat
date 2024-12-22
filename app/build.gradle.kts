@@ -14,7 +14,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.gitstat"
-        minSdk = 26
+        minSdk = 28
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -70,6 +70,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.compose)
     // Coil-Images
     implementation(libs.coil.compose)
+    implementation(libs.coil.gif)
     // Dagger-Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
@@ -89,4 +90,5 @@ dependencies {
     implementation(libs.converter.gson)
     implementation(libs.okhttp)
     implementation(libs.logging.interceptor)
+
 }

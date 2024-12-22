@@ -1,5 +1,6 @@
 package com.example.gitstat.domain.useCases
 
+import com.example.gitstat.domain.model.Commit
 import com.example.gitstat.domain.model.InvalidUserException
 import com.example.gitstat.domain.repository.Repository
 import com.example.gitstat.presentation.utils.Resource
@@ -8,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 class GetCommits(
     private val repository: Repository
 ) {
-    suspend operator fun invoke(userName: String, repoName: String): Flow<Resource<Int>> {
+    suspend operator fun invoke(userName: String, repoName: String): Flow<Resource<List<Commit>>> {
         if(userName.isBlank()){
             throw InvalidUserException("Username can't be empty...")
         }

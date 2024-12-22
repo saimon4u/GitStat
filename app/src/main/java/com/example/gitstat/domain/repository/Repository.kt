@@ -1,5 +1,6 @@
 package com.example.gitstat.domain.repository
 
+import com.example.gitstat.domain.model.Commit
 import com.example.gitstat.domain.model.Repo
 import com.example.gitstat.domain.model.User
 import com.example.gitstat.presentation.utils.Resource
@@ -30,5 +31,5 @@ interface Repository {
     suspend fun getCommits(
         userName: String,
         repoName: String
-    ): Flow<Resource<Int>>
+    ): Flow<Resource<List<Commit>>>
 }

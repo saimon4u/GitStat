@@ -39,15 +39,15 @@ fun StatisticsSection(
         ) {
             Text(
                 text = "Public Repository: $repoCount",
-                style = MaterialTheme.typography.bodyMedium,
-                fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(8.dp))
             Text(
                 text = "Language Used: $languageCount",
-                style = MaterialTheme.typography.bodyMedium,
-                fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
@@ -58,15 +58,15 @@ fun StatisticsSection(
         ) {
             Text(
                 text = "Total Commit: $commitCount",
-                style = MaterialTheme.typography.bodyMedium,
-                fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
                 color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Deployment (Github Pages): $deploymentCount",
-                style = MaterialTheme.typography.bodyMedium,
-                fontFamily = MaterialTheme.typography.bodyMedium.fontFamily,
+                text = "Deployment: $deploymentCount",
+                style = MaterialTheme.typography.bodySmall,
+                fontFamily = MaterialTheme.typography.bodySmall.fontFamily,
                 color = MaterialTheme.colorScheme.onBackground
             )
         }
